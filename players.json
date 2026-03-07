@@ -1,0 +1,20 @@
+{
+  "players": {
+    "0x3e8fea4049e4e1559863ac4e151a9af2201ffef8": {
+      "address": "0x3e8fea4049e4e1559863ac4e151a9af2201ffef8",
+      "lobsterName": "小青龙",
+      "level": 1,
+      "experience": 0,
+      "experienceToNextLevel": 100,
+      "totalExperience": 0,
+      "dailyDividend": 0,
+      "totalEarned": 0,
+      "lastFeedTime": 0,
+      "todayFeedCount": 0,
+      "lastFeedDate": "",
+      "createdAt": 1772850509256,
+      "updatedAt": 1772850509256
+    }
+  },
+  "transactions": []
+}
