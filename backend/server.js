@@ -2,15 +2,29 @@ import express from 'express'
 import cors from 'cors'
 import fs from 'fs'
 import path from 'path'
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+
+// ES Module 下正确获取 __dirname
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 const app = express()
 const PORT = process.env.PORT || 5000
 
-// 读取外部配置文件 - 使用 __dirname 确保在任何环境下都能找到文件
-const CONFIG_FILE = path.join(__dirname, 'config.json')
+console.log('🚀 Server starting...')
+console.log('📁 __dirname:', __dirname)
+console.log('📂 Current working directory:', process.cwd())
 
-// 如果上面的路径找不到，尝试从项目根目录找
-const ALT_CONFIG_FILE = path.join(__dirname, '..', 'public', 'config.json')
+// 读取外部配置文件 - 使用多种方式确保能找到文件
+const PROJECT_ROOT = path.join(__dirname, '..')
+const CONFIG_FILE = path.join(__dirname, 'config.json')
+const ALT_CONFIG_FILE = path.join(PROJECT_ROOT, 'public', 'config.json')
+const ALT_CONFIG_FILE2 = path.join(PROJECT_ROOT, 'backend', 'config.json')
+
+console.log('📁 PROJECT_ROOT:', PROJECT_ROOT)
+console.log('📁 CONFIG_FILE:', CONFIG_FILE)
+console.log('📁 ALT_CONFIG_FILE:', ALT_CONFIG_FILE)
 
 let gameConfig = {
   tokenAddress: '',
@@ -33,10 +47,14 @@ const loadConfig = () => {
   try {
     // 尝试多个可能的配置文件路径
     let configPath = null
-    if (fs.existsSync(CONFIG_FILE)) {
-      configPath = CONFIG_FILE
-    } else if (fs.existsSync(ALT_CONFIG_FILE)) {
-      configPath = ALT_CONFIG_FILE
+    const possiblePaths = [CONFIG_FILE, ALT_CONFIG_FILE, ALT_CONFIG_FILE2]
+    
+    for (const p of possiblePaths) {
+      console.log('🔍 Checking config:', p, '- exists:', fs.existsSync(p))
+      if (fs.existsSync(p)) {
+        configPath = p
+        break
+      }
     }
     
     if (configPath) {
@@ -88,12 +106,15 @@ app.use(cors())
 app.use(express.json())
 
 // 静态文件服务 - 前端构建产物
-app.use(express.static(path.join(__dirname, '..', 'dist')))
+const DIST_DIR = path.join(PROJECT_ROOT, 'dist')
+console.log('📁 DIST_DIR:', DIST_DIR, '- exists:', fs.existsSync(DIST_DIR))
+
+app.use(express.static(DIST_DIR))
 
 // SPA 回退 - 所有不匹配 API 的请求都返回 index.html
 app.get('*', (req, res) => {
   if (!req.path.startsWith('/api')) {
-    res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'))
+    res.sendFile(path.join(DIST_DIR, 'index.html'))
   }
 })
 
