@@ -3,7 +3,7 @@
   "build": {
     "builder": "NIXPACKS",
     "buildCommand": "npm install && npm run build",
-    "startCommand": "cd backend && npm install && node server.js"
+    "startCommand": "node backend/server.js"
   },
   "deploy": {
     "numReplicas": 1,
