@@ -454,9 +454,9 @@ app.post('/api/config/reload', (req, res) => {
   }
 })
 
-// 启动服务器
-app.listen(PORT, () => {
-  console.log(`🦞 龙虾游戏后端服务器运行在 http://localhost:${PORT}`)
+// 启动服务器 - 必须监听 0.0.0.0 让外部能访问
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🦞 龙虾游戏后端服务器运行在 http://0.0.0.0:${PORT}`)
   console.log(`📊 API端点:`)
   console.log(`   - GET  /api/player/:address`)
   console.log(`   - POST /api/player`)
