@@ -87,6 +87,16 @@ let db = readData()
 app.use(cors())
 app.use(express.json())
 
+// 静态文件服务 - 前端构建产物
+app.use(express.static(path.join(__dirname, '..', 'dist')))
+
+// SPA 回退 - 所有不匹配 API 的请求都返回 index.html
+app.get('*', (req, res) => {
+  if (!req.path.startsWith('/api')) {
+    res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'))
+  }
+})
+
 // 工具函数
 const formatPlayer = (player, id) => ({
   id,
